@@ -12,9 +12,8 @@ const Login: React.FC = () => {
       password: "",
     },
   });
-  const [enteredStateIsValid, setEnteredStateIsValid] = useState(false);
-  const [enteredStateClicked, setEnteredStateClicked] = useState(false);
-  const enteredStateIsVaidated = !enteredStateIsValid && enteredStateClicked;
+  const [error, setError] = useState("");
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setState({
       user: {
@@ -25,17 +24,23 @@ const Login: React.FC = () => {
   };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    setEnteredStateClicked(true);
-    if (
-      state.user.userEmail.trim() === "" &&
-      state.user.password.trim() === ""
-    ) {
-      setEnteredStateIsValid(false);
+    if (state.user.userEmail.trim() === "") {
+      setError("Email is required");
       return;
     }
-
-    setEnteredStateIsValid(true);
-    alert("login success");
+   
+    if (state.user.password.trim() === "") {
+      setError("Password is required");
+      return;
+    }
+    setError("");
+    setState({
+      user: {
+        userEmail: "",
+        password: "",
+      },
+    });
+    console.log(state);
   };
   return (
     <form className="text-center " onSubmit={handleSubmit}>
@@ -47,7 +52,6 @@ const Login: React.FC = () => {
         onChange={handleChange}
         placeholder="Enter your email"
         pattern=".+@gmail\.com"
-        required
       />
       <br />
       <input
@@ -62,9 +66,9 @@ const Login: React.FC = () => {
         Forgot Password?
       </p>
       <br />
-      {enteredStateIsVaidated && (
+      {error && (
         <p className="text-red-500 font-bold m-56 w-80 rounded-lg my-2">
-          Either Email or password is Empty
+          {error}
         </p>
       )}
       <button
